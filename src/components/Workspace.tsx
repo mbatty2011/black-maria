@@ -49,10 +49,10 @@ export default function Workspace({
       {/* ── Tabs ───────────────────────────────────────────────────────── */}
       <nav className="mt-6 flex gap-1 text-xs uppercase tracking-widest">
         <TabButton active={tab === "breakdown"} onClick={() => setTab("breakdown")}>
-          Breakdown · {scenes.length} sc
+          Breakdown · {scenes.length} scene{scenes.length === 1 ? "" : "s"}
         </TabButton>
         <TabButton active={tab === "registry"} onClick={() => setTab("registry")}>
-          Canonical Registry · {lockedCount}
+          Canonical Registry · {lockedCount} locked
         </TabButton>
         <TabButton active={tab === "wall"} onClick={() => setTab("wall")}>
           Consistency Wall
@@ -187,7 +187,7 @@ function BreakdownView({
             )}
             <div className="mt-3 flex flex-wrap gap-2">
               {els.length === 0 && (
-                <span className="text-[11px] text-edge">no elements tagged</span>
+                <span className="text-[11px] text-muted">No elements tagged in this scene.</span>
               )}
               {els.map((el) => {
                 const asset = el.assetId
@@ -221,7 +221,7 @@ function BreakdownView({
                   >
                     <span className="uppercase opacity-60">{el.type}</span>
                     {el.name}
-                    {lockable && <span className="text-amber">＋lock</span>}
+                    {lockable && <span className="text-amber">+ lock</span>}
                   </button>
                 );
               })}
@@ -285,13 +285,13 @@ function RegistryView({
               </p>
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-[10px] text-edge">
-                  seed {current?.seed} · signed off {current?.signedOffBy}
+                  seed {current?.seed} · signed off by {current?.signedOffBy}
                 </span>
                 <button
                   onClick={() => onChange(asset)}
                   className="rounded-sm border border-alarm/50 px-2.5 py-1 text-[11px] text-alarm transition hover:bg-alarm hover:text-ink"
                 >
-                  change / re-spec
+                  Change canon
                 </button>
               </div>
 
@@ -485,7 +485,7 @@ function LockModal({
                 onClick={() => {
                   setSelected(i);
                   setSpec(o.spec);
-                  setLabel(o.label ? element.name : element.name);
+                  setLabel(o.label || element.name);
                 }}
                 className={`block w-full rounded-sm border p-3 text-left text-[12px] transition ${
                   selected === i

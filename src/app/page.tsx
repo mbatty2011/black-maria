@@ -72,7 +72,11 @@ export default async function Home() {
                     {p.logline}
                   </p>
                   <div className="mt-3 text-[10px] uppercase tracking-widest text-edge">
-                    {new Date(p.createdAt).toLocaleString()}
+                    {new Date(p.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </div>
                 </Link>
               </li>
