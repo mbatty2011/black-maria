@@ -7,6 +7,11 @@
 // build a real breakdown with zero API keys.
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Stable id for the bundled sample, so a keyless serverless deploy can
+ *  self-heal: any instance can reconstruct "The Last Drop" on demand without a
+ *  shared store. */
+export const SAMPLE_PROJECT_ID = "proj_the_last_drop";
+
 export const THE_LAST_DROP = {
   title: "The Last Drop",
   filename: "the-last-drop.fdx",

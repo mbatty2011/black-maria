@@ -5,7 +5,7 @@ import { runLineProducer } from "@/lib/crew/line-producer";
 import { runPropMaster, type PropOption } from "@/lib/crew/prop-master";
 import { priceFilm, type FinanceReport } from "@/lib/pricing";
 import { id, now, seedFrom } from "@/lib/ids";
-import { THE_LAST_DROP } from "@/lib/sample";
+import { SAMPLE_PROJECT_ID, THE_LAST_DROP } from "@/lib/sample";
 import type {
   Asset,
   AssetVersion,
@@ -44,8 +44,15 @@ export async function listProjects(): Promise<Project[]> {
 }
 
 export async function getFilm(projectId: string): Promise<FilmView | null> {
-  const m = await getStore().read();
-  const project = m.projects.find((p) => p.id === projectId);
+  let m = await getStore().read();
+  let project = m.projects.find((p) => p.id === projectId);
+  // Self-heal the bundled sample on a keyless serverless instance that never
+  // saw the original bootstrap write (cold-routed lambda, no shared store).
+  if (!project && projectId === SAMPLE_PROJECT_ID) {
+    await bootstrapSample();
+    m = await getStore().read();
+    project = m.projects.find((p) => p.id === projectId);
+  }
   if (!project) return null;
   const inProj = <T extends { projectId: string }>(xs: T[]) =>
     xs.filter((x) => x.projectId === projectId);
@@ -63,8 +70,15 @@ export async function getFilm(projectId: string): Promise<FilmView | null> {
 // ── Bootstrap: hand in the sample script, run the Line Producer ──────────────
 
 export async function bootstrapSample(): Promise<string> {
+  // Idempotent: one canonical sample film, stable id, so reloads and
+  // cold-routed serverless instances converge on the same project.
+  const existing = await getStore().read();
+  if (existing.projects.some((p) => p.id === SAMPLE_PROJECT_ID)) {
+    return SAMPLE_PROJECT_ID;
+  }
+
   const breakdown = await runLineProducer(THE_LAST_DROP.rawText);
-  const projectId = id("proj");
+  const projectId = SAMPLE_PROJECT_ID;
   const createdAt = now();
 
   await getStore().commit((m) => {
