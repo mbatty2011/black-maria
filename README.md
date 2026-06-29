@@ -1,5 +1,8 @@
 # Black Maria 2.0 — the production brain
 
+**▶ Live demo: [black-maria.vercel.app](https://black-maria.vercel.app)** ·
+**Code: [github.com/mbatty2011/black-maria](https://github.com/mbatty2011/black-maria)**
+
 > Not a generator. The orchestration layer those tools are missing: one shared
 > memory that breaks a script into every element, holds a **canonical, locked
 > version** of each, injects it into every render so the world stays consistent,
