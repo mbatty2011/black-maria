@@ -1,0 +1,19 @@
+# dependencies
+/node_modules
+
+# next
+/.next
+/out
+next-env.d.ts
+
+# data (local file-store driver)
+/.data
+
+# env
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.tsbuildinfo
+/.vercel
